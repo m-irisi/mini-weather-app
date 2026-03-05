@@ -1,3 +1,6 @@
+## To run this app:
+- run both front and back end
+
 ### frontend
 ```npm run dev``` to run frontend
 
