@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 import httpx
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # fine for development
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/health")
 async def health():
@@ -29,13 +37,7 @@ async def get_weather(latitude: float, longitude: float):
             weather_codes = data["daily"]["weather_code"]  # list of 7 days
             dates = data["daily"]["time"]
 
-            # zip them together to get day-by-day data
-            forecast = [
-                {"date": date, "weather_code": code}
-                for date, code in zip(dates, weather_codes)
-            ]
-
-            return {"forecast": forecast}
+            return {"dates": dates, "weather_codes": weather_codes}
 
     except httpx.HTTPStatusError as e:
         return {"error": f"HTTP error: {e.response.status_code}", "detail": e.response.text}
